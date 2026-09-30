@@ -1,0 +1,834 @@
+:root {
+  --ui-bg: #0d0d17;
+  --ui-text: #ffffff;
+  --accent: #ffd23f;
+  --panel: #1e1e33;
+  --danger: #e63946;
+  --ok: #2ecc71;
+  --wood1: #c98a4b;
+  --wood2: #7a4a24;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  font-family: 'Trebuchet MS', 'Courier New', monospace;
+  overflow: hidden;
+}
+
+/* Título do jogo */
+h1 {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 3rem;
+  letter-spacing: 4px;
+
+  color: var(--accent);
+
+  text-shadow:
+    3px 3px 0 #000;
+
+  z-index: 25;
+}
+
+/* Área principal do jogo */
+#gameWrap {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  overflow: hidden;
+}
+
+/* Canvas */
+canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  background: #5c94fc;
+
+  image-rendering: pixelated;
+}
+
+/* HUD do jogo */
+#hud {
+  position: absolute;
+
+  top: 25px;
+  left: 30px;
+  right: 30px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+
+  flex-wrap: wrap;
+
+
+  font-size: 28px;
+
+  font-weight: bold;
+
+  color: #fff;
+
+  text-shadow:
+    3px 3px 0 #000;
+
+  pointer-events: none;
+
+  z-index: 10;
+}
+
+/* Moedas */
+#coinsHud {
+  font-size: 36px;
+}
+
+/* Corações */
+#heartsHud {
+  display: flex;
+
+  gap: 8px;
+
+  align-items: center;
+}
+
+.heartSlot {
+  position: relative;
+
+  width: 35px;
+
+  height: 35px;
+}
+
+.heartSlot span {
+  position: absolute;
+
+  inset: 0;
+
+  font-size: 35px;
+
+  line-height: 35px;
+}
+
+.heartSlot .bgHeart {
+  color: #3a2a2a;
+}
+
+.heartSlot .fgHeart {
+  color: #e63946;
+
+  overflow: hidden;
+}
+
+/* Barra de vida */
+#barWrap {
+  width: 240px;
+
+  height: 28px;
+
+  background: #000;
+
+  border: 4px solid #000;
+
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+#barFill {
+  height: 100%;
+
+  width: 100%;
+
+  background:
+    linear-gradient(#8fd,
+      #2ecc71);
+}
+
+/* Fundo dos menus */
+.overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.65);
+
+  display: none;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  z-index: 20;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+/* Tela inicial */
+#startOverlay {
+  background: #000;
+
+  z-index: 100px;
+}
+
+/* Títulos dos menus */
+.overlay h2 {
+  font-size: 2.5rem;
+
+  color: var(--accent);
+
+  margin: 0;
+
+  text-shadow:
+
+    3px 3px 0 #000;
+}
+
+/* Texto dos menus */
+.overlay p {
+  font-size: 1.2rem;
+
+  max-width: 700px;
+
+  line-height: 1.5;
+
+  color: #fff;
+}
+
+/* Grupo de botões */
+#menuStack {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  padding: 40px;
+
+  border-radius: 15px;
+}
+
+/* Botões principais */
+.signBtn {
+  width: 420px;
+
+  padding: 20px 0;
+
+
+  background:
+
+    linear-gradient(180deg,
+      var(--wood1),
+      var(--wood2));
+
+
+  border: 4px solid #2b1a0a;
+
+  border-radius: 10px;
+
+
+  color: #ffe9a8;
+
+
+  font-size: 1.6rem;
+
+  font-weight: bold;
+
+  letter-spacing: 3px;
+
+
+  text-shadow:
+
+    3px 3px 0 #2b1a0a;
+
+
+  box-shadow:
+
+    0 7px 0 #2b1a0a;
+
+
+  cursor: pointer;
+}
+
+.signBtn:active {
+  transform: translateY(4px);
+}
+
+.signBtn.selected {
+  outline: 4px solid var(--accent);
+}
+
+.signBtn:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
+
+/* Nome da fase */
+#phaseTag {
+  position: absolute;
+
+  top: 90px;
+
+  left: 30px;
+
+
+  font-size: 24px;
+
+  background: rgba(0, 0, 0, 0.55);
+
+
+  padding: 8px 18px;
+
+  border-radius: 8px;
+
+
+  color: #fff;
+
+  text-shadow:
+
+    2px 2px 0 #000;
+
+
+  pointer-events: none;
+
+  z-index: 15;
+}
+
+/* Mensagem inferior */
+#footerHint {
+  position: absolute;
+
+  bottom: 20px;
+
+  left: 30px;
+
+  right: 30px;
+
+
+  text-align: center;
+
+
+  font-size: 20px;
+
+
+  background: rgba(0, 0, 0, 0.55);
+
+
+  padding: 10px;
+
+
+  border-radius: 10px;
+
+
+  color: #fff;
+
+
+  pointer-events: none;
+
+  z-index: 15;
+}
+
+/* Caixa geral de mensagens */
+#quizModal,
+#gateModal,
+#mageModal,
+#chestModal {
+  position: absolute;
+
+  inset: 0;
+
+
+  background: rgba(0, 0, 0, 0.75);
+
+
+  display: none;
+
+
+  flex-direction: column;
+
+
+  align-items: center;
+
+  justify-content: center;
+
+
+  gap: 20px;
+
+
+  padding: 20px;
+
+
+  z-index: 30;
+}
+
+#quizModal.show,
+#gateModal.show,
+#mageModal.show,
+#chestModal.show {
+  display: flex;
+}
+
+/* Caixa interna */
+.box {
+  background: var(--panel);
+
+
+  border: 4px solid var(--accent);
+
+
+  border-radius: 15px;
+
+
+  padding: 30px;
+
+
+  width: 600px;
+
+  max-width: 90%;
+
+
+  text-align: center;
+}
+
+/* Títulos das caixas */
+.box h4 {
+  margin: 0 0 15px;
+
+
+  color: var(--accent);
+
+
+  font-size: 1.5rem;
+
+  letter-spacing: 2px;
+}
+
+/* Texto das caixas */
+.box p {
+  font-size: 1.3rem;
+
+  line-height: 1.5;
+}
+
+/* Botões gerais */
+button {
+  font-family: inherit;
+
+  font-size: 1.3rem;
+
+
+  padding: 15px 35px;
+
+
+  background: var(--accent);
+
+
+  color: #1a1a2e;
+
+
+  border: 4px solid #000;
+
+
+  border-radius: 10px;
+
+
+  cursor: pointer;
+
+
+  font-weight: bold;
+}
+
+/* Mapa de fases */
+#trailWrap {
+  position: relative;
+
+  width: 90%;
+
+  max-width: 900px;
+
+  padding: 50px 20px;
+}
+
+#trailLine {
+  position: absolute;
+
+  top: 50%;
+
+  left: 40px;
+
+  right: 40px;
+
+
+  height: 8px;
+
+
+  background: #3a3a5c;
+
+
+  transform: translateY(-50%);
+
+
+  border-radius: 5px;
+}
+
+#trailNodes {
+  position: relative;
+
+
+  display: flex;
+
+
+  justify-content: space-between;
+
+
+  z-index: 1;
+}
+
+/* Botões das fases */
+.phaseNode {
+  display: flex;
+
+  flex-direction: column;
+
+
+  align-items: center;
+
+
+  gap: 10px;
+
+
+  cursor: pointer;
+
+
+  background: none;
+
+
+  border: none;
+
+
+  color: #fff;
+}
+
+.phaseNode .circle {
+  width: 75px;
+
+  height: 75px;
+
+
+  border-radius: 50%;
+
+
+  background: var(--accent);
+
+
+  border: 4px solid #000;
+
+
+  display: flex;
+
+
+  align-items: center;
+
+
+  justify-content: center;
+
+
+  font-size: 1.8rem;
+
+
+  font-weight: bold;
+
+
+  color: #1a1a2e;
+}
+
+.phaseNode.locked .circle {
+  background: #4a4a5c;
+
+  color: #8a8a9c;
+}
+
+.phaseNode.selected .circle {
+  outline: 5px solid #fff;
+}
+
+.phaseNode .label {
+  font-size: 1rem;
+
+  max-width: 120px;
+
+  text-align: center;
+}
+
+/* Opções das perguntas */
+.quizOptions {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+.quizOpt {
+  background: #2b2b45;
+
+
+  color: #fff;
+
+
+  border: 4px solid #000;
+
+
+  border-radius: 10px;
+
+
+  padding: 15px;
+
+
+  font-size: 1.2rem;
+
+
+  cursor: pointer;
+
+
+  text-align: left;
+}
+
+.quizOpt.selected {
+  outline: 4px solid var(--accent);
+}
+
+.quizOpt.correctFlash {
+  background: var(--ok) !important;
+
+  color: #000;
+}
+
+.quizOpt.wrongFlash {
+  background: var(--danger) !important;
+}
+
+/* Teclado do portão */
+.keypad {
+  display: grid;
+
+
+  grid-template-columns: repeat(3, 80px);
+
+
+  gap: 12px;
+
+
+  justify-content: center;
+}
+
+.keyBtn {
+  width: 80px;
+
+  height: 60px;
+
+
+  background: #2b2b45;
+
+
+  border: 4px solid #000;
+
+
+  border-radius: 10px;
+
+
+  color: #fff;
+
+
+  font-size: 1.4rem;
+
+
+  display: flex;
+
+
+  align-items: center;
+
+
+  justify-content: center;
+
+
+  cursor: pointer;
+}
+
+.keyBtn.selectedKey {
+  outline: 4px solid var(--accent);
+}
+
+.keyBtn.wide {
+  grid-column: span 3;
+
+  width: auto;
+}
+
+/* Campo de resposta do portão */
+#gateAnswerDisplay {
+  font-size: 2rem;
+
+
+  background: #0d0d17;
+
+
+  border: 4px solid var(--accent);
+
+
+  border-radius: 10px;
+
+
+  padding: 15px 30px;
+
+
+  min-width: 220px;
+
+
+  margin: 0 auto 20px;
+
+
+  letter-spacing: 4px;
+}
+
+/* Valor do volume */
+#optVolumeVal {
+  color: var(--accent);
+}
+
+/* Caixa de comandos */
+.keyHint {
+  display: flex;
+
+  justify-content: center;
+
+
+  gap: 25px;
+
+
+  margin-top: 15px;
+
+
+  font-size: 1.1rem;
+
+
+  color: #fff;
+}
+
+.keyHint .badge {
+  display: inline-flex;
+
+
+  width: 35px;
+
+  height: 35px;
+
+
+  border-radius: 50%;
+
+
+  background: #333;
+
+
+  border: 3px solid #fff;
+
+
+  align-items: center;
+
+
+  justify-content: center;
+
+
+  margin-right: 8px;
+}
+
+/* Instruções */
+#instructions {
+  display: none;
+}
+
+/* Ajuste para telas menores */
+@media(max-width:900px) {
+  h1 {
+
+    font-size: 2rem;
+
+    top: 15px;
+
+  }
+
+
+
+  #hud {
+
+    font-size: 18px;
+
+  }
+
+
+
+  #coinsHud {
+
+    font-size: 25px;
+
+  }
+
+
+
+  .signBtn {
+
+    width: 300px;
+
+    font-size: 1.2rem;
+
+  }
+
+
+
+  #barWrap {
+
+    width: 160px;
+
+  }
+}

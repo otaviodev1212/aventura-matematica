@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aventura Matemática - Jogo de Plataforma 2D</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="gameWrap">
+  <canvas id="game" width="800" height="384"></canvas>
+  <div id="hud">
+    <span id="scoreHud">PONTOS: 0</span>
+    <span id="coinsHud">🪙 x0</span>
+    <div id="heartsHud"></div>
+    <div id="barWrap"><div id="barFill"></div></div>
+  </div>
+  <div id="phaseTag">Fase 1</div>
+  <div id="footerHint"></div>
+
+  <div class="overlay show" id="startOverlay">
+    <h2>Aventura Matemática</h2>
+    <div id="menuStack">
+      <button class="signBtn" id="menuPlay">NOVO JOGO</button>
+      <button class="signBtn" id="menuContinue">CONTINUAR</button>
+      <button class="signBtn" id="menuOptions">OPÇÕES</button>
+      <button class="signBtn" id="menuCredits">CRÉDITOS</button>
+      <button class="signBtn" id="menuExit">SAIR</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="optionsOverlay">
+    <h2>Opções</h2>
+    <p>Volume: <span id="optVolumeVal">80%</span></p>
+    <input type="range" id="volumeSlider" min="0" max="100" value="80" style="width:220px;">
+    <p style="margin-top:14px;text-align:left;">
+      <b>Comandos (teclado):</b><br>
+      ← → / A D: mover · ↑ / W / Espaço: pular<br>
+      X ou K: atacar · Enter: confirmar nos menus<br>
+      E: interagir (ex: falar com o mago) · Esc / Backspace: voltar<br><br>
+      <b>Comandos (controle PS/Xbox/genérico):</b><br>
+      Analógico esquerdo ou D-pad: mover/navegar · Cima: pular<br>
+      A (Xbox) / ✕ (PS; botão inferior): confirmar nos menus e pular na fase<br>
+      X (Xbox) / □ (PS; botão esquerdo) ou L2/LT/R2/RT: atacar<br>
+      B (Xbox) / ○ (PS; botão direito): voltar ao mapa · Y (Xbox) / △ (PS; botão superior): interagir
+    </p>
+    <button id="optionsBackBtn">VOLTAR</button>
+  </div>
+
+  <div class="overlay" id="creditsOverlay">
+    <h2>Créditos</h2>
+    <p>Aventura Matemática<br>Um jogo educativo de matemática do 1º ano do Ensino Médio.<br><br>
+    Criado por: [seu nome aqui]<br>
+    Conteúdo pedagógico: em parceria com o professor<br>
+    Desenvolvido com apoio de Claude (Anthropic)</p>
+    <button id="creditsBackBtn">VOLTAR</button>
+  </div>
+
+  <div class="overlay" id="phaseSelectOverlay">
+    <h2>Mapa de Fases</h2>
+    <p>Escolha a fase. Complete uma fase para liberar a próxima!</p>
+    <div id="trailWrap">
+      <div id="trailLine"></div>
+      <div id="trailNodes"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="phaseIntroOverlay">
+    <h2 id="phaseIntroTitle">Fase 1</h2>
+    <h3 id="phaseIntroSubject">Assunto</h3>
+    <p id="phaseIntroText"></p>
+    <button id="phaseIntroBtn">COMEÇAR FASE</button>
+  </div>
+
+  <div class="overlay" id="endOverlay">
+    <h2 id="endTitle"></h2>
+    <p id="endText"></p>
+    <p id="endStats" style="color:var(--accent);"></p>
+    <button id="endBtn"></button>
+  </div>
+
+  <div id="quizModal">
+    <div class="box">
+      <h4 id="quizMonsterLabel">MONSTRO DERROTADO! RESPONDA:</h4>
+      <p id="quizQuestion"></p>
+      <div class="quizOptions" id="quizOptions"></div>
+      <div id="feedbackMsg" style="min-height:18px;color:var(--accent);font-size:0.85rem;"></div>
+      <div class="keyHint"><span><span class="badge">↑↓</span>Escolher</span><span><span class="badge">X</span>Confirmar</span></div>
+    </div>
+  </div>
+
+  <div id="gateModal">
+    <div class="box">
+      <h4 id="gateLabel">PORTÃO · CALCULE PARA AVANÇAR</h4>
+      <p id="gateQuestion"></p>
+      <div id="gateAnswerDisplay">_</div>
+      <div class="keypad" id="gateKeypad"></div>
+      <div id="gateFeedback" style="font-size:0.85rem;color:var(--accent);min-height:18px;"></div>
+      <div class="keyHint"><span><span class="badge">↕↔</span>Navegar</span><span><span class="badge">X</span>Confirmar</span></div>
+    </div>
+  </div>
+
+  <div id="mageModal">
+    <div class="box">
+      <h4>🧙 MAGO DAS MOEDAS</h4>
+      <p id="mageText">Quer recuperar 1 coração por 10 moedas?</p>
+      <button id="mageBuyBtn">COMPRAR (10 🪙)</button>
+      <div style="height:8px;"></div>
+      <button id="mageCloseBtn" style="background:#3a3a5c;color:#fff;">FECHAR</button>
+    </div>
+  </div>
+
+  <div id="chestModal">
+    <div class="box">
+      <h4>📦 BAÚ ABERTO!</h4>
+      <p id="chestHintText"></p>
+      <button id="chestCloseBtn">FECHAR</button>
+    </div>
+  </div>
+</div>
+<div id="instructions">
+  Jogo para PC — teclado ou controle (PS/Xbox/genérico). Veja os comandos completos em Opções.
+</div>
+
+<script src="js/01-config.js"></script>
+<script src="js/02-audio.js"></script>
+<script src="js/03-layout.js"></script>
+<script src="js/04-phases.js"></script>
+<script src="js/05-state.js"></script>
+<script src="js/06-ui.js"></script>
+<script src="js/07-input.js"></script>
+<script src="js/08-modals.js"></script>
+<script src="js/09-physics.js"></script>
+<script src="js/10-update.js"></script>
+<script src="js/11-render.js"></script>
+<script src="js/12-main.js"></script>
+</body>
+</html>
